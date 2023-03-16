@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "570963629986",
+    "project_id": "feeling-app-892d7",
+    "storage_bucket": "feeling-app-892d7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570963629986:android:a6663b2f01de46950d04fb",
+        "android_client_info": {
+          "package_name": "com.example.kelly_logistics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570963629986-p5qq2125pu382p0eg039ptdmol114b19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbLGjoNRdoMjyPqGUGvImPYK11s9tfS-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570963629986-p5qq2125pu382p0eg039ptdmol114b19.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
