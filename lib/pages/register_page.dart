@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kelly_logistics/pages/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
-  final VoidCallback showLoginPage;
-  const RegisterPage({super.key, required this.showLoginPage});
+  // final VoidCallback showLoginPage;
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -217,7 +219,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: widget.showLoginPage,
+                      onTap: () {
+                        Get.to(LoginPage());
+                      },
                       child: Text(
                         "Login",
                         style: TextStyle(

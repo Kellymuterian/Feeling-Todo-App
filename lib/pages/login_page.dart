@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kelly_logistics/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-  get showRegisterPage => null;
+  // get showRegisterPage => null;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -168,6 +170,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 20),
                 //not a user?  Register!
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -177,17 +180,17 @@ class _LoginPageState extends State<LoginPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: widget.showRegisterPage,
-                      child: Text(
-                        "Register now",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF04fc74),
-                        ),
-                      ),
-                    )
                   ],
+                ),
+                GestureDetector(
+                  onTap: () => Get.to(() => RegisterPage()),
+                  child: Text(
+                    "Register now",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF04fc74),
+                    ),
+                  ),
                 ),
               ],
             ),
