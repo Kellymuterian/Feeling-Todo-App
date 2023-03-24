@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:kelly_logistics/pages/home_page.dart';
 import 'package:kelly_logistics/pages/login_page.dart';
 
 Future main() async {
@@ -21,7 +23,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'My APP',
       initialRoute: "/",
-      home: LoginPage(),
+      home: FirebaseAuth.instance.currentUser != null
+          ? const HomePage()
+          : const LoginPage(),
     );
   }
 }
+//quicktype

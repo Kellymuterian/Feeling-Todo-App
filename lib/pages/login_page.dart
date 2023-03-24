@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kelly_logistics/pages/register_page.dart';
 
+import 'home_page.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,15 +21,17 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim())
+        .then((value) => value != null
+            ? Get.to(() => const HomePage())
+            : print("Not a user"));
   }
 
   @override
   void dispose() {
-    // ignore: todo
-    // TODO: implement dispose
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -155,13 +159,16 @@ class _LoginPageState extends State<LoginPage> {
                         color: const Color(0xFF755bb4),
                         borderRadius: BorderRadius.circular(25),
                       ),
-                      child: const Center(
-                          child: Text(
-                        "Log In",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
+                      child: Center(
+                          child: GestureDetector(
+                        onTap: () => Get.to(() => const HomePage()),
+                        child: const Text(
+                          "Log In",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
                         ),
                       )),
                     ),
@@ -183,8 +190,8 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () => Get.to(() => RegisterPage()),
-                  child: Text(
+                  onTap: () => Get.to(() => const RegisterPage()),
+                  child: const Text(
                     "Register now",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
