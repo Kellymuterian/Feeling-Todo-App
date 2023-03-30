@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kelly_logistics/pages/add_page.dart';
 
 class HomePage extends StatefulWidget {
