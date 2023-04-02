@@ -1,15 +1,15 @@
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:kelly_logistics/pages/register_page.dart';
-
 import 'home_page.dart';
+import 'user.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  // get showRegisterPage => null;
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,17 +17,33 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // text controllers
-  final _emailController = TextEditingController();
+  // final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  Future signIn() async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim())
-        .then((value) => value != null
-            ? Get.to(() => const HomePage())
-            : print("Not a user"));
+  Future<void> _signIn() async {
+    final url = Uri.parse('https://muterian.kimworks.buzz/api/users');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> users = jsonDecode(response.body);
+      final String email = _emailController.text.trim();
+      final String password = _passwordController.text.trim();
+
+      final authenticatedUser = users.firstWhere(
+        (user) => user['email'] == email && user['password'] == password,
+        orElse: () => null,
+      );
+
+      if (authenticatedUser != null) {
+        final user = User.fromJson(authenticatedUser);
+        Get.to(() => const HomePage());
+      } else {
+        print("Invalid email or password");
+      }
+    } else {
+      print("Failed to load user data");
+    }
   }
 
   @override
@@ -123,10 +139,6 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextField(
                         controller: _passwordController,
                         obscureText: true,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Password",
-                        ),
                       ),
                     ),
                   ),
@@ -135,7 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 15,
                 ),
-                //Forgot Password!
+
+                // Forgot Password!
                 Padding(
                   padding: const EdgeInsets.only(right: 30.0),
                   child: Row(
@@ -148,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 10),
 
-                //sign in button
+                // sign in button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 125.0),
                   child: GestureDetector(
@@ -160,9 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(25),
                       ),
                       child: Center(
-                          child: GestureDetector(
-                        onTap: () => Get.to(() => const HomePage()),
-                        child: const Text(
+                        child: Text(
                           "Log In",
                           style: TextStyle(
                             color: Colors.white,
@@ -170,13 +181,14 @@ class _LoginPageState extends State<LoginPage> {
                             fontSize: 17,
                           ),
                         ),
-                      )),
+                      ),
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
-                //not a user?  Register!
+
+                // not a user? Register!
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -189,6 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+
                 GestureDetector(
                   onTap: () => Get.to(() => const RegisterPage()),
                   child: const Text(
@@ -205,5 +218,29 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+}
+
+Future signIn() async {
+  final url = Uri.parse('https://muterian.kimworks.buzz/api/users');
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final List<dynamic> users = jsonDecode(response.body);
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
+    final authenticatedUser = users.firstWhere(
+      (user) => user['email'] == email && user['password'] == password,
+      orElse: () => null,
+    );
+
+    if (authenticatedUser != null) {
+      Get.to(() => const HomePage());
+    } else {
+      print("Not a user");
+    }
+  } else {
+    print("Failed to fetch users");
   }
 }
