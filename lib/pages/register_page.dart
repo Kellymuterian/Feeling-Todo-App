@@ -219,9 +219,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Get.to(LoginPage());
-                      },
+                      onTap: () => Get.to(() => LoginPage(
+                            onLogin: () {},
+                          )),
                       child: Text(
                         "Login",
                         style: TextStyle(

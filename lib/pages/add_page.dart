@@ -15,12 +15,27 @@ class AddTodoPage extends StatefulWidget {
 class _AddTodoPageState extends State<AddTodoPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final todo = widget.todo;
+    if (todo != null) {
+      isEdit = true;
+      final title = todo['title'];
+      final description = todo['description'];
+      titleController.text = title;
+      descriptionController.text = description;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Todo'),
+        title: Text(isEdit ? 'Edit Todo' : 'Add Todo'),
       ),
       body: ListView(
         padding: EdgeInsets.all(20),
@@ -39,12 +54,49 @@ class _AddTodoPageState extends State<AddTodoPage> {
           ),
           SizedBox(height: 20),
           ElevatedButton(
-            onPressed: submitData,
-            child: Text('SUBMIT'),
+            onPressed: isEdit ? updateData : submitData,
+            child: Text(isEdit ? 'Update' : 'SUBMIT'),
           )
         ],
       ),
     );
+  }
+
+  Future<void> updateData() async {
+    //Get the data from the form
+    final todo = widget.todo;
+    if (todo == null) {
+      print('You cannot update without todo data');
+      return;
+    }
+    final id = todo['id'];
+    // final isCompleted = todo['is_completed'];
+    final title = titleController.text;
+    final description = descriptionController.text;
+
+    //Create a map of the data to send to the server
+    final data = {
+      "title": title,
+      "description": description,
+      "is_completed": false,
+    };
+
+    //Submit the data to the server
+    final url = 'https://muterian.kimworks.buzz/api/todo/$id/edit';
+    final response = await http.put(
+      Uri.parse(url),
+      body: jsonEncode(data),
+      headers: {'Content-type': 'application/json'},
+    );
+
+    //Show success or fail message based on status
+    if (response.statusCode == 200) {
+      titleController.text = '';
+      descriptionController.text = '';
+      showSuccessMessage('Updated Successfully');
+    } else {
+      showErrorMessage('Update failed');
+    }
   }
 
   Future<void> submitData() async {

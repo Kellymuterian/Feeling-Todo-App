@@ -9,7 +9,8 @@ import 'home_page.dart';
 import 'user.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key, required void Function() onLogin})
+      : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,7 +18,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // text controllers
-  // final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
@@ -36,7 +36,6 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (authenticatedUser != null) {
-        final user = User.fromJson(authenticatedUser);
         Get.to(() => const HomePage());
       } else {
         print("Invalid email or password");
@@ -65,13 +64,14 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                    width: 200,
-                    height: 200,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: Image.asset(
-                      "assets/images/logo-no-background.png",
-                      fit: BoxFit.cover,
-                    )),
+                  width: 200,
+                  height: 200,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: Image.asset(
+                    "assets/images/logo-no-background.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 //Hello again!
                 Text(
@@ -81,11 +81,9 @@ class _LoginPageState extends State<LoginPage> {
                     fontSize: 36,
                   ),
                 ),
-
                 const SizedBox(
                   height: 20,
                 ),
-
                 Text(
                   "Welcome back you have been missed",
                   textAlign: TextAlign.center,
@@ -94,11 +92,9 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 const SizedBox(
                   height: 25,
                 ),
-
                 //email textfield
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -120,11 +116,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(
                   height: 25,
                 ),
-
                 //password textfield
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -139,6 +133,10 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextField(
                         controller: _passwordController,
                         obscureText: true,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Password",
+                        ),
                       ),
                     ),
                   ),
@@ -165,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 125.0),
                   child: GestureDetector(
-                    onTap: signIn,
+                    onTap: _signIn,
                     child: Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
@@ -203,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 GestureDetector(
-                  onTap: () => Get.to(() => const RegisterPage()),
+                  //onTap: () => Get.to(() => const RegisterPage()),
+                  onTap: () => Get.to(() => RegisterPage()),
                   child: const Text(
                     "Register now",
                     style: TextStyle(
@@ -227,20 +226,21 @@ Future signIn() async {
 
   if (response.statusCode == 200) {
     final List<dynamic> users = jsonDecode(response.body);
-    final String email = _emailController.text.trim();
-    final String password = _passwordController.text.trim();
+    //final String email = _emailController.text.trim();
+    //final String password = _passwordController.text.trim();
 
-    final authenticatedUser = users.firstWhere(
-      (user) => user['email'] == email && user['password'] == password,
-      orElse: () => null,
-    );
+    // final authenticatedUser = users.firstWhere(
+    //   (user) => user['email'] == email && user['password'] == password,
+    //   orElse: () => null,
+    // );
 
-    if (authenticatedUser != null) {
-      Get.to(() => const HomePage());
-    } else {
-      print("Not a user");
-    }
-  } else {
-    print("Failed to fetch users");
+    //   if (authenticatedUser != null) {
+    //     Get.to(() => const HomePage());
+    //   } else {
+    //     print("Not a user");
+    //   }
+    // } else {
+    //   print("Failed to fetch users");
+    // }
   }
 }
