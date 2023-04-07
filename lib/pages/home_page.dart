@@ -4,6 +4,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:kelly_logistics/pages/add_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:kelly_logistics/services/todo_service.dart';
+import 'package:kelly_logistics/widget/todo_card.dart';
+
+import '../utils/snackbar_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isLoading = true;
   List items = [];
 
   @override
@@ -41,35 +46,11 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               final item = items[index] as Map;
               final id = item['id'].toString();
-              return Card(
-                child: ListTile(
-                    leading: CircleAvatar(child: Text('${index + 1}')),
-                    title: Text(item['title']),
-                    subtitle: Text(item['description']),
-                    trailing: PopupMenuButton(
-                      onSelected: (value) {
-                        if (value == 'edit') {
-                          //open the edit page
-                          navigateToEditPage(item);
-                        } else if (value == 'delete') {
-                          //delete and remove the item
-                          deleteById(id);
-                        }
-                      },
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                            child: Text('Edit'),
-                            value: 'edit',
-                          ),
-                          PopupMenuItem(
-                            child: Text('Delete'),
-                            value: 'delete',
-                          )
-                        ];
-                      },
-                    )),
-              );
+              return TodoCard(
+                  index: index,
+                  item: item,
+                  navigateEdit: navigateToEditPage,
+                  deleteById: deleteById);
             },
           ),
         ),
@@ -79,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void navigateToEditPage(Map item) {
+  Future<void> navigateToEditPage(Map item) async {
     final route = MaterialPageRoute(
       builder: (context) => AddTodoPage(todo: item),
     );
@@ -94,37 +75,34 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> deleteById(String id) async {
-    //Delete the item
-    final url = 'https://muterian.kimworks.buzz/api/todo/$id/delete';
-    final uri = Uri.parse(url);
-    final response = await http.delete(uri);
-    if (response.statusCode == 200) {
-      //Remove the Item
-
-      // final filtered = items.where((element) => element['id'] != id).toList();
-      // setState(() {
-      //   items = filtered;
-      // });
+    final isSuccess = await TodoService.deleteById(id);
+    if (isSuccess) {
+      final filtered = items.where((element) => element['id'] != id).toList();
+      setState(() {
+        items = filtered;
+      });
       fetchTodo();
     } else {
-      //show error message
-
+      showErrorMessage(context, message: 'Deletion Failed');
     }
   }
 
   Future<void> fetchTodo() async {
-    final url = 'https://muterian.kimworks.buzz/api/todo';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body) as Map;
-      final result = json['Task'] as List;
+    final response = await TodoService.fetchTodos();
+    if (response != null) {
       setState(() {
-        items = result;
+        items = response;
       });
-      log(result.toString());
     } else {
-      //show error message
+      showErrorMessage(context, message: 'Something went wrong');
     }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void showSuccessMessage(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

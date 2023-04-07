@@ -3,6 +3,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:kelly_logistics/services/todo_service.dart';
+
+import '../utils/snackbar_helper.dart';
 
 class AddTodoPage extends StatefulWidget {
   final Map? todo;
@@ -70,78 +73,39 @@ class _AddTodoPageState extends State<AddTodoPage> {
       return;
     }
     final id = todo['id'];
-    // final isCompleted = todo['is_completed'];
-    final title = titleController.text;
-    final description = descriptionController.text;
-
-    //Create a map of the data to send to the server
-    final data = {
-      "title": title,
-      "description": description,
-      "is_completed": false,
-    };
-
-    //Submit the data to the server
-    final url = 'https://muterian.kimworks.buzz/api/todo/$id/edit';
-    final response = await http.put(
-      Uri.parse(url),
-      body: jsonEncode(data),
-      headers: {'Content-type': 'application/json'},
-    );
+    //Submit the updated data to the server
+    final isSuccess = await TodoService.updateTodo(id, body);
 
     //Show success or fail message based on status
-    if (response.statusCode == 200) {
-      titleController.text = '';
-      descriptionController.text = '';
-      showSuccessMessage('Updated Successfully');
+    if (isSuccess) {
+      showSuccessMessage(context, message: 'Updated Successfully');
     } else {
-      showErrorMessage('Update failed');
+      showErrorMessage(context, message: 'Update failed');
     }
   }
 
   Future<void> submitData() async {
+    //Submit the data to the server
+    final isSuccess = await TodoService.addTodo(body);
+
+    //Show success or fail message based on status
+    if (isSuccess) {
+      titleController.text = '';
+      descriptionController.text = '';
+      showSuccessMessage(context, message: 'Creation Success');
+    } else {
+      showErrorMessage(context, message: 'Creation Failed');
+    }
+  }
+
+  Map get body {
     //Get the data from the form
     final title = titleController.text;
     final description = descriptionController.text;
-
-    //Create a map of the data to send to the server
-    final data = {
+    return {
       "title": title,
       "description": description,
       "is_completed": false,
     };
-
-    //Submit the data to the server
-    const url = 'https://muterian.kimworks.buzz/api/todo';
-    final response = await http.post(
-      Uri.parse(url),
-      body: jsonEncode(data),
-      headers: {'Content-type': 'application/json'},
-    );
-
-    //Show success or fail message based on status
-    if (response.statusCode == 201) {
-      titleController.text = '';
-      descriptionController.text = '';
-      showSuccessMessage('Creation Success');
-    } else {
-      showErrorMessage('Creation Failed');
-    }
-  }
-
-  void showSuccessMessage(String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void showErrorMessage(String message) {
-    final snackBar = SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
