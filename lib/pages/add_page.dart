@@ -1,17 +1,21 @@
+// import 'dart:convert';
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class AddTodoPage extends StatefulWidget {
-  const AddTodoPage({super.key});
+  final Map? todo;
+  const AddTodoPage({super.key, this.todo});
 
   @override
-  State<AddTodoPage> createState() => _AddTodoPageState();
+  _AddTodoPageState createState() => _AddTodoPageState();
 }
 
 class _AddTodoPageState extends State<AddTodoPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +39,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
           ),
           SizedBox(height: 20),
           ElevatedButton(
-            onPressed: SubmitData,
+            onPressed: submitData,
             child: Text('SUBMIT'),
           )
         ],
@@ -43,27 +47,27 @@ class _AddTodoPageState extends State<AddTodoPage> {
     );
   }
 
-  Future<void> SubmitData() async {
-    //Get the data from server
+  Future<void> submitData() async {
+    //Get the data from the form
     final title = titleController.text;
     final description = descriptionController.text;
-    final body = {
-      {
-        "title": title,
-        "description": description,
-        "is_completed": false,
-      }
+
+    //Create a map of the data to send to the server
+    final data = {
+      "title": title,
+      "description": description,
+      "is_completed": false,
     };
-    //submit data to server
+
+    //Submit the data to the server
     const url = 'https://muterian.kimworks.buzz/api/todo';
-    final uri = Uri.parse(url);
     final response = await http.post(
-      uri,
-      body: jsonEncode(body),
+      Uri.parse(url),
+      body: jsonEncode(data),
       headers: {'Content-type': 'application/json'},
     );
 
-    //show success or fail message based on status
+    //Show success or fail message based on status
     if (response.statusCode == 201) {
       titleController.text = '';
       descriptionController.text = '';

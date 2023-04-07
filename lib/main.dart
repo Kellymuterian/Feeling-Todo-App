@@ -1,32 +1,48 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:kelly_logistics/pages/home_page.dart';
 import 'package:kelly_logistics/pages/login_page.dart';
 
-Future main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
+void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isLoggedIn = false;
+
+  void _login() {
+    setState(() {
+      isLoggedIn = true;
+    });
+  }
+
+  void _logout() {
+    setState(() {
+      isLoggedIn = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Get.lazyPut(() => DataController());
-    // loadData();
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'My APP',
       initialRoute: "/",
-      home: FirebaseAuth.instance.currentUser != null
-          ? const HomePage()
-          : const LoginPage(),
+      home: HomePage(),
+      // home: isLoggedIn
+      //     ? const HomePage()
+      //     : LoginPage(
+      //         onLogin: _login,
+      //       ),
     );
   }
 }
+
 //quicktype
