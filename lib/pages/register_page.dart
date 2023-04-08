@@ -1,11 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kelly_logistics/pages/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
-  // final VoidCallback showLoginPage;
   const RegisterPage({super.key});
 
   @override
@@ -13,27 +11,17 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-//text controllers
+  //text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
-    // ignore: todo
-    // TODO: implement dispose
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
-  }
-
-  Future signUp() async {
-    if (passwordConfirmed()) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-    }
   }
 
   bool passwordConfirmed() {
@@ -57,13 +45,14 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                    width: 200,
-                    height: 200,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: Image.asset(
-                      "assets/images/logo-no-background.png",
-                      fit: BoxFit.cover,
-                    )),
+                  width: 200,
+                  height: 200,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: Image.asset(
+                    "assets/images/logo-no-background.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 //Hello again!
                 Text(
@@ -73,11 +62,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     fontSize: 36,
                   ),
                 ),
-
                 const SizedBox(
                   height: 20,
                 ),
-
                 Text(
                   "Be part of us, Register Below.",
                   textAlign: TextAlign.center,
@@ -86,11 +73,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 const SizedBox(
                   height: 25,
                 ),
-
                 //email textfield
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -112,11 +97,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(
                   height: 25,
                 ),
-
                 //password textfield
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -139,11 +122,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(
                   height: 25,
                 ),
-
                 //Confirm password textfield
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -187,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 125.0),
                   child: GestureDetector(
-                    onTap: signUp,
+                    //onTap: signUp,
                     child: Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
@@ -207,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 //not a user?  Register!
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

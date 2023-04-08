@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:kelly_logistics/pages/home_page.dart';
 import 'package:kelly_logistics/pages/login_page.dart';
+import 'package:kelly_logistics/pages/register_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,14 +37,11 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'My APP',
       initialRoute: "/",
-      home: HomePage(),
-      // home: isLoggedIn
-      //     ? const HomePage()
-      //     : LoginPage(
-      //         onLogin: _login,
-      //       ),
+      home: isLoggedIn
+          ? const HomePage()
+          : LoginPage(
+              onLogin: _login,
+            ),
     );
   }
 }
-
-//quicktype

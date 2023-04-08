@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:kelly_logistics/pages/register_page.dart';
 import 'home_page.dart';
-import 'user.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key, required void Function() onLogin})
